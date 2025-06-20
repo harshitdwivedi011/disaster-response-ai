@@ -1,0 +1,30 @@
+import React, { useEffect, useState } from "react";
+import ReportForm from "./ReportForm";
+import ReportList from "./ReportList";
+
+const ReportDashboard = () => {
+  const [reports, setReports] = useState([]);
+
+  const fetchReports = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/reports");
+      const data = await res.json();
+      setReports(data.reverse()); // newest first
+    } catch (err) {
+      console.error("Error fetching reports:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchReports(); // Initial fetch
+  }, []);
+
+  return (
+    <div className="flex flex-col gap-6">
+      <ReportForm refreshReports={fetchReports} />
+      <ReportList reports={reports} />
+    </div>
+  );
+};
+
+export default ReportDashboard;
