@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+// import { io } from "socket.io-client";
 import SocialFeed from "./SocialReports";
+import OfficialUpdates from "./OfficialUpdates";
 
 const DisasterList = ({
   disasters,
@@ -8,6 +10,7 @@ const DisasterList = ({
   setFilterTag,
 }) => {
   const [resourceMap, setResourceMap] = useState({});
+
   const handleDelete = async (id) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this disaster?"
@@ -15,6 +18,10 @@ const DisasterList = ({
     if (!confirmed) return;
     await fetch(`http://localhost:5000/disasters/${id}`, {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "x-user": "netrunnerX", // or 'reliefAdmin'
+      },
     });
     fetchDisasters(filterTag);
   };
@@ -46,6 +53,7 @@ const DisasterList = ({
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        "x-user": "netrunnerX", // or 'reliefAdmin'
       },
       body: JSON.stringify({
         title,
@@ -127,7 +135,7 @@ const DisasterList = ({
               </button>
             </div>
 
-            <div className="mt-2">
+            <div className="mt-2 inline-block bg-blue-200 px-2 py-1 rounded">
               <h4 className="font-medium text-sm text-blue-600">
                 Nearby Resources:
               </h4>
@@ -135,14 +143,18 @@ const DisasterList = ({
                 <ul className="list-disc ml-5 text-sm">
                   {resourceMap[disaster.id].map((res) => (
                     <li key={res.id}>
-                      {res.name} ({res.type})
+                      {res.name} ({res.type})<p>{res.location_name}</p>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm italic">No Resources Mapped for this ID</p>
+                <p className="text-sm italic">
+                  No Resources Mapped for this ID
+                </p>
               )}
             </div>
+
+            <OfficialUpdates disasterId={disaster.id} />
 
             <SocialFeed disasterId={disaster.id} />
           </div>

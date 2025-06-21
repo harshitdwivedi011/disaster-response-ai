@@ -3,7 +3,6 @@ import "./App.css";
 import DisasterForm from "./components/DisasterForm";
 import DisasterList from "./components/DisasterList";
 import ReportDashboard from "./components/ReportDashboard";
-import OfficialUpdates from "./components/OfficialUpdates";
 
 function App() {
   const [disasters, setDisasters] = useState([]);
@@ -13,7 +12,11 @@ function App() {
     const url = tag
       ? `http://localhost:5000/disasters?tag=${encodeURIComponent(tag)}`
       : "http://localhost:5000/disasters";
-    const res = await fetch(url);
+    const res = await fetch(url, {
+      headers: {
+        "x-user": "netrunnerX", // or "reliefAdmin"
+      },
+    });
     const data = await res.json();
     setDisasters(data);
   };
@@ -45,13 +48,6 @@ function App() {
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Reports</h2>
         <ReportDashboard />
-      </section>
-
-      <section className="space-y-4">
-        <h2 className="text-xl font-semibold">
-          Official Updates From Red Cross
-        </h2>
-        <OfficialUpdates />
       </section>
     </div>
   );

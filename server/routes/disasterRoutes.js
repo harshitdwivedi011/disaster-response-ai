@@ -18,7 +18,7 @@ router.delete("/:id", deleteDisaster);
 
 router.get("/:id/social-media", getSocialMedia);
 router.get("/:id/resources", getResourcesNearby);
-router.get("/official-updates", getOfficialUpdates);
+router.get("/:id/official-updates", getOfficialUpdates);
 router.post("/:id/verify-image", verifyImage);
 
 module.exports = router;

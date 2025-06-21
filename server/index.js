@@ -32,17 +32,14 @@ app.use((req, res, next) => {
   next();
 });
 
-// Test Supabase connection
-app.get("/test-supabase", async (req, res) => {
-  const { data, error } = await supabase.from("api_cache").select("*").limit(2);
-  if (error) return res.status(500).json({ error: "Supabase test failed" });
-  res.json({ message: "Supabase connected", data });
-});
-
 // Routes
 app.use("/disasters", disasterRoutes);
 app.use("/geocode", geocodeRoute);
 app.use("/api/reports", reportRoutes);
+
+app.use((req, res) => {
+  res.status(404).json({ error: "Route not found" });
+});
 
 // Socket.IO events
 io.on("connection", (socket) => {

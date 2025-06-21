@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 
 const ReportForm = ({ refreshReports }) => {
   const [form, setForm] = useState({
@@ -10,6 +11,26 @@ const ReportForm = ({ refreshReports }) => {
 
   const [disasters, setDisasters] = useState([]);
   const [verificationStatus, setVerificationStatus] = useState(null);
+
+  useEffect(() => {
+    const socket = io("http://localhost:5000");
+
+    socket.on("disaster_updated", ({ type, data }) => {
+      if (type === "create") {
+        // Add new disaster to top of the list
+        setDisasters((prev) => [data, ...prev]);
+      } else if (type === "delete") {
+        // Remove the deleted disaster
+        setDisasters((prev) => prev.filter((d) => d.id !== data.id));
+      } else if (type === "update") {
+        setDisasters((prev) => prev.map((d) => (d.id === data.id ? data : d)));
+      }
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   // Fetch disasters once
   useEffect(() => {
@@ -38,6 +59,7 @@ const ReportForm = ({ refreshReports }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-user": "netrunnerX", // or 'reliefAdmin'
         },
         body: JSON.stringify({
           ...form,

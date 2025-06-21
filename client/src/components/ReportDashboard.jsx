@@ -7,7 +7,11 @@ const ReportDashboard = () => {
 
   const fetchReports = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/reports");
+      const res = await fetch("http://localhost:5000/api/reports", {
+        headers: {
+          "x-user": "netrunnerX", // or "reliefAdmin"
+        },
+      });
       const data = await res.json();
       setReports(data.reverse()); // newest first
     } catch (err) {
@@ -22,7 +26,7 @@ const ReportDashboard = () => {
   return (
     <div className="flex flex-col gap-6">
       <ReportForm refreshReports={fetchReports} />
-      <ReportList reports={reports} />
+      {reports.length > 0 ? <ReportList reports={reports} /> : ""}
     </div>
   );
 };

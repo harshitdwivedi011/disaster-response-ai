@@ -1,6 +1,6 @@
 const mockUsers = {
-  netrunnerX: { username: "netrunnerX", role: "contributor" },
-  reliefAdmin: { username: "reliefAdmin", role: "admin" },
+  netrunnerX: { username: "netrunnerX", role: "admin" },
+  reliefAdmin: { username: "reliefAdmin", role: "contributor" },
 };
 
 module.exports = (req, res, next) => {

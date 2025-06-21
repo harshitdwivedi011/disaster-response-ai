@@ -237,9 +237,30 @@ exports.getResourcesNearby = async (req, res) => {
 };
 
 exports.getOfficialUpdates = async (req, res) => {
-  const cacheKey = "official_updates";
-
+  const { id } = req.params;
   try {
+    // 1. Get disaster info
+    const { data: disaster, error } = await supabase
+      .from("disasters")
+      .select("title, description, tags")
+      .eq("id", id)
+      .single();
+
+    if (error || !disaster) throw new Error("Disaster not found");
+
+    // 2. Create unique keyword-based cache key
+    const keywords = [
+      ...(disaster.tags || []),
+      ...disaster.title.split(" "),
+      ...disaster.description.split(" "),
+    ]
+      .map((k) => k.toLowerCase())
+      .filter((v) => !!v);
+
+    const cacheKey = `official_updates:${[...new Set(keywords)]
+      .sort()
+      .join("_")}`;
+
     const updates = await getOrSetCache(cacheKey, async () => {
       const redCrossURL =
         "https://www.redcross.org/about-us/news-and-events.html";
@@ -257,7 +278,8 @@ exports.getOfficialUpdates = async (req, res) => {
           const link =
             "https://www.redcross.org" + $(el).find("a").attr("href");
 
-          if (title && link) {
+          const lowerTitle = title.toLowerCase();
+          if (keywords.some((kw) => lowerTitle.includes(kw))) {
             updates.push({ title, date, link });
           }
         });
