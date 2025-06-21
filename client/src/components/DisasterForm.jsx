@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+const server_origin = import.meta.env.VITE_SERVER_ORIGIN;
 const DisasterForm = ({ onSubmitSuccess }) => {
   const [tagInput, setTagInput] = useState("");
   const [form, setForm] = useState({
@@ -32,7 +33,7 @@ const DisasterForm = ({ onSubmitSuccess }) => {
 
     try {
       // 1. Geocode location_name
-      const geoRes = await fetch("http://localhost:5000/geocode/", {
+      const geoRes = await fetch(`${server_origin}/geocode/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -59,7 +60,7 @@ const DisasterForm = ({ onSubmitSuccess }) => {
       };
 
       // 3. Submit to /disasters
-      const response = await fetch("http://localhost:5000/disasters/", {
+      const response = await fetch(`${server_origin}/disasters/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

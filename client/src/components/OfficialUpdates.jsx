@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 
+const server_origin = import.meta.env.VITE_SERVER_ORIGIN;
 const OfficialUpdates = ({ disasterId }) => {
   const [updates, setUpdates] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -8,7 +9,7 @@ const OfficialUpdates = ({ disasterId }) => {
     const fetchUpdates = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/disasters/${disasterId}/official-updates`
+          `${server_origin}/disasters/${disasterId}/official-updates`
         );
         const data = await res.json();
         setUpdates(data.updates || []);

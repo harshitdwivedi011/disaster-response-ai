@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import ReportForm from "./ReportForm";
 import ReportList from "./ReportList";
 
+const server_origin = import.meta.env.VITE_SERVER_ORIGIN;
 const ReportDashboard = () => {
   const [reports, setReports] = useState([]);
 
   const fetchReports = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/reports", {
+      const res = await fetch(`${server_origin}/api/reports`, {
         headers: {
           "x-user": "netrunnerX", // or "reliefAdmin"
         },

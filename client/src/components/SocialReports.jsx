@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:5000");
+const server_origin = import.meta.env.VITE_SERVER_ORIGIN;
+
+const socket = io(server_origin);
 
 const SocialFeed = ({ disasterId }) => {
   const [posts, setPosts] = useState([]);
@@ -11,7 +13,7 @@ const SocialFeed = ({ disasterId }) => {
     const fetchExistingPosts = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/disasters/${disasterId}/social-media`,
+          `${server_origin}/disasters/${disasterId}/social-media`,
           {
             headers: {
               "x-user": "netrunnerX",

@@ -8,12 +8,13 @@ const ReportForm = ({ refreshReports }) => {
     content: "",
     image_url: "",
   });
+  const server_origin = import.meta.env.VITE_SERVER_ORIGIN;
 
   const [disasters, setDisasters] = useState([]);
   const [verificationStatus, setVerificationStatus] = useState(null);
 
   useEffect(() => {
-    const socket = io("http://localhost:5000");
+    const socket = io(server_origin);
 
     socket.on("disaster_updated", ({ type, data }) => {
       if (type === "create") {
@@ -36,7 +37,7 @@ const ReportForm = ({ refreshReports }) => {
   useEffect(() => {
     const fetchDisasters = async () => {
       try {
-        const res = await fetch("http://localhost:5000/disasters/");
+        const res = await fetch(`${server_origin}/disasters/`);
         const data = await res.json();
         setDisasters(data);
       } catch (err) {
@@ -55,7 +56,7 @@ const ReportForm = ({ refreshReports }) => {
 
     try {
       // Submit report to backend (with status = pending)
-      const response = await fetch("http://localhost:5000/api/reports", {
+      const response = await fetch(`${server_origin}/api/reports`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,7 +78,7 @@ const ReportForm = ({ refreshReports }) => {
       // If there's an image URL, trigger Gemini verification
       if (form.image_url) {
         const verifyRes = await fetch(
-          `http://localhost:5000/disasters/${form.disaster_id}/verify-image/`,
+          `${server_origin}/disasters/${form.disaster_id}/verify-image/`,
           {
             method: "POST",
             headers: {
@@ -94,7 +95,7 @@ const ReportForm = ({ refreshReports }) => {
 
           // Update the report's verification status
           await fetch(
-            `http://localhost:5000/api/reports/${submittedReport.id}/update-verification`,
+            `${server_origin}/api/reports/${submittedReport.id}/update-verification`,
             {
               method: "PATCH",
               headers: {

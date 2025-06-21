@@ -1,5 +1,7 @@
 import { io } from "socket.io-client";
 
-export const socket = io("http://localhost:5000", {
+const server_origin = import.meta.env.VITE_SERVER_ORIGIN;
+
+export const socket = io(server_origin, {
   transports: ["websocket"], // helps with fallback issues
 });

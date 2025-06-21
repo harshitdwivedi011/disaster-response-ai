@@ -4,14 +4,16 @@ import DisasterForm from "./components/DisasterForm";
 import DisasterList from "./components/DisasterList";
 import ReportDashboard from "./components/ReportDashboard";
 
+const server_origin = import.meta.env.VITE_SERVER_ORIGIN;
+
 function App() {
   const [disasters, setDisasters] = useState([]);
   const [filterTag, setFilterTag] = useState("");
 
   const fetchDisasters = async (tag) => {
     const url = tag
-      ? `http://localhost:5000/disasters?tag=${encodeURIComponent(tag)}`
-      : "http://localhost:5000/disasters";
+      ? `${server_origin}/disasters?tag=${encodeURIComponent(tag)}`
+      : `${server_origin}/disasters`;
     const res = await fetch(url, {
       headers: {
         "x-user": "netrunnerX", // or "reliefAdmin"

@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import SocialFeed from "./SocialReports";
 import OfficialUpdates from "./OfficialUpdates";
 
+const server_origin = import.meta.env.VITE_SERVER_ORIGIN;
+
 const DisasterList = ({
   disasters,
   fetchDisasters,
@@ -16,7 +18,7 @@ const DisasterList = ({
       "Are you sure you want to delete this disaster?"
     );
     if (!confirmed) return;
-    await fetch(`http://localhost:5000/disasters/${id}`, {
+    await fetch(`${server_origin}/disasters/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -28,7 +30,7 @@ const DisasterList = ({
   const fetchResources = async (disasterId, lat, lon) => {
     try {
       const res = await fetch(
-        `http://localhost:5000/disasters/${disasterId}/resources?lat=${lat}&lon=${lon}`
+        `${server_origin}/disasters/${disasterId}/resources?lat=${lat}&lon=${lon}`
       );
       const data = await res.json();
       setResourceMap((prev) => ({ ...prev, [disasterId]: data }));
@@ -49,7 +51,7 @@ const DisasterList = ({
 
     if (!title || !location_name || !description) return;
 
-    await fetch(`http://localhost:5000/disasters/${id}`, {
+    await fetch(`${server_origin}/disasters/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
