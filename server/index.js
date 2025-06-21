@@ -4,18 +4,18 @@ const supabase = require("./supabase");
 const socketIo = require("socket.io");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+require("dotenv").config();
 
 const disasterRoutes = require("./routes/disasterRoutes");
 const geocodeRoute = require("./routes/geocode");
 const reportRoutes = require("./routes/reportRoutes");
 
-// const mockAuth = require("./middlewares/mockAuth");
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_ORIGIN,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   },
