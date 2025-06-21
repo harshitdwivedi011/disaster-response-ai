@@ -101,6 +101,65 @@ A full-stack application built to manage disasters, map nearby resources, collec
 4. `/disasters/:id/resources` returns nearby mapped relief points.
 5. `/disasters/:id/official-updates` fetches and filters **Red Cross updates** relevant to that disaster.
 
+## 🤖 Cursor's Role in Project Development
+
+### ✅ 1. Geospatial Queries (Supabase RPC)
+
+**Use Case:**  
+To locate nearby resources (shelters, help centers, etc.) within a 10km radius of a disaster’s geolocation using lat/lon and PostGIS.
+
+**How Cursor Helped:**  
+- Generated the `supabase.rpc("nearby_resources", {...})` logic.
+- Helped with geospatial argument structuring (`lat`, `lon`, `radius_km`, `disaster_id`).
+- Ensured strong type and format checking to avoid PostGIS errors.
+
+**Impact:**  
+Enabled accurate, fast geospatial lookups using Supabase indexes.
+
+---
+
+### ⚡ 2. Real-time WebSocket Events (Socket.IO)
+
+**Use Case:**  
+To broadcast disaster updates (create, update, delete) to all connected clients in real-time.
+
+**How Cursor Helped:**  
+- Generated reusable Socket.IO handlers:
+  - Server: `req.io.emit("disaster_updated", {...})`
+  - Client: `socket.on("disaster_updated", handler)`
+- Ensured automatic list updates in `<select>` dropdowns without reload.
+
+**Impact:**  
+Improved interactivity and real-time collaboration across the app.
+
+---
+
+### 📦 3. Supabase Caching Logic (TTL)
+
+**Use Case:**  
+To reduce repeated API hits by caching disaster-related resources and scraped content.
+
+**How Cursor Helped:**  
+- Generated the `getOrSetCache()` pattern with TTL expiry.
+- Used for:
+  - `/disasters/:id/resources`
+  - `/disasters/:id/official-updates`
+
+**Impact:**  
+Reduced API latency and load on Supabase and external scrapers.
+
+## 📈 Impact of AI Usage
+
+- 🛠 **Faster Development**: Saved approximately 30–40% development time, especially in writing backend logic like route handlers, Supabase queries, and real-time integrations.
+
+- 🔍 **Cleaner Code**: Cursor suggested optimized, readable, and production-ready patterns that reduced redundant logic.
+
+- 🌐 **Interoperability**: Enabled seamless integration with third-party APIs such as Google Geocoding and Gemini AI for geospatial enrichment and image verification.
+
+- 🔁 **Reduced Rework**: Early logic validation and structure generation from Cursor reduced common backend bugs and eliminated the need for repetitive trial-and-error debugging.
+
+**Cursor allowed this platform to evolve faster, smarter, and more reliably.**
+
 ### Prerequisites
 
 Make sure you have the following installed:
